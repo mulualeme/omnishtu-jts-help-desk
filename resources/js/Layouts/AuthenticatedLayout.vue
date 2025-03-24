@@ -79,6 +79,14 @@ onMounted(() => {
                                 >
                                     Knowledge Base
                                 </NavLink>
+                                <NavLink
+                                    :href="route('canned-responses.index')"
+                                    :active="
+                                        route().current('canned-responses.*')
+                                    "
+                                >
+                                    Canned Responses
+                                </NavLink>
                             </div>
                         </div>
 
@@ -219,6 +227,12 @@ onMounted(() => {
                             :active="route().current('knowledge-base.*')"
                         >
                             Knowledge Base
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            :href="route('canned-responses.index')"
+                            :active="route().current('canned-responses.*')"
+                        >
+                            Canned Responses
                         </ResponsiveNavLink>
                     </div>
 

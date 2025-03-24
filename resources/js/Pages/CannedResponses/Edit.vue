@@ -2,7 +2,7 @@
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Edit Knowledge Base Article
+                Edit Canned Response
             </h2>
         </template>
 
@@ -11,35 +11,6 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <form @submit.prevent="submit">
-                            <div class="mb-4">
-                                <label
-                                    for="category_id"
-                                    class="block text-sm font-medium text-gray-700"
-                                    >Category</label
-                                >
-                                <select
-                                    id="category_id"
-                                    v-model="form.category_id"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                    required
-                                >
-                                    <option value="">Select a category</option>
-                                    <option
-                                        v-for="category in categories"
-                                        :key="category.id"
-                                        :value="category.id"
-                                    >
-                                        {{ category.name }}
-                                    </option>
-                                </select>
-                                <div
-                                    v-if="form.errors.category_id"
-                                    class="text-red-500 text-sm mt-1"
-                                >
-                                    {{ form.errors.category_id }}
-                                </div>
-                            </div>
-
                             <div class="mb-4">
                                 <label
                                     for="title"
@@ -63,6 +34,26 @@
 
                             <div class="mb-4">
                                 <label
+                                    for="category"
+                                    class="block text-sm font-medium text-gray-700"
+                                    >Category</label
+                                >
+                                <input
+                                    type="text"
+                                    id="category"
+                                    v-model="form.category"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                />
+                                <div
+                                    v-if="form.errors.category"
+                                    class="text-red-500 text-sm mt-1"
+                                >
+                                    {{ form.errors.category }}
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label
                                     for="content"
                                     class="block text-sm font-medium text-gray-700"
                                     >Content</label
@@ -70,7 +61,7 @@
                                 <textarea
                                     id="content"
                                     v-model="form.content"
-                                    rows="10"
+                                    rows="6"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                     required
                                 ></textarea>
@@ -86,18 +77,19 @@
                                 <label class="inline-flex items-center">
                                     <input
                                         type="checkbox"
-                                        v-model="form.is_published"
+                                        v-model="form.is_public"
                                         class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                     />
-                                    <span class="ml-2">Published</span>
+                                    <span class="ml-2"
+                                        >Make this response public (visible to
+                                        all agents)</span
+                                    >
                                 </label>
                             </div>
 
                             <div class="flex justify-end">
                                 <Link
-                                    :href="
-                                        route('knowledge-base.articles.index')
-                                    "
+                                    :href="route('canned-responses.index')"
                                     class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 mr-4"
                                 >
                                     Cancel
@@ -107,7 +99,7 @@
                                     class="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700"
                                     :disabled="form.processing"
                                 >
-                                    Update Article
+                                    Update Response
                                 </button>
                             </div>
                         </form>
@@ -123,18 +115,17 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Link, useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
-    article: Object,
-    categories: Array,
+    response: Object,
 });
 
 const form = useForm({
-    category_id: props.article.category_id,
-    title: props.article.title,
-    content: props.article.content,
-    is_published: props.article.is_published,
+    title: props.response.title,
+    category: props.response.category,
+    content: props.response.content,
+    is_public: props.response.is_public,
 });
 
 const submit = () => {
-    form.put(route("knowledge-base.articles.update", props.article.id));
+    form.put(route("canned-responses.update", props.response.id));
 };
 </script>

@@ -19,13 +19,13 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <div
-                            v-if="$page.props.flash.success"
+                            v-if="$page.props.flash?.success"
                             class="mb-4 p-4 bg-green-100 text-green-700 rounded"
                         >
                             {{ $page.props.flash.success }}
                         </div>
                         <div
-                            v-if="$page.props.flash.error"
+                            v-if="$page.props.flash?.error"
                             class="mb-4 p-4 bg-red-100 text-red-700 rounded"
                         >
                             {{ $page.props.flash.error }}

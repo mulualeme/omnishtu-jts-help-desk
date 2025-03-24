@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\KnowledgeBaseCategoryController;
 use App\Http\Controllers\KnowledgeBaseArticleController;
+use App\Http\Controllers\CannedResponseController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -32,6 +33,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Articles
     Route::resource('knowledge-base/articles', KnowledgeBaseArticleController::class)
         ->names('knowledge-base.articles');
+
+    // Canned Responses
+    Route::resource('canned-responses', CannedResponseController::class);
 });
 
 // Public Knowledge Base Routes
