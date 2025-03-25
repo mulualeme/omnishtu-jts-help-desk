@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from "vue";
-import { Head, Link } from "@inertiajs/vue3";
+import { Head, Link, usePage } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 
@@ -8,6 +8,9 @@ const props = defineProps({
     auth: Object,
     tickets: Array,
 });
+
+const page = usePage();
+const currentRoute = computed(() => page.component);
 
 const filters = ref({
     status: "",
@@ -34,9 +37,13 @@ const filteredTickets = computed(() => {
     <AuthenticatedLayout>
         <template #header>
             <div class="flex-1 flex justify-between items-center">
-                <h2 class="text-xl font-semibold text-gray-800 leading-tight">
-                    Tickets
-                </h2>
+                <div>
+                    <nav class="flex items-center text-gray-500 text-base">
+                        <span class="text-gray-700 text-xl font-semibold"
+                            >Tickets</span
+                        >
+                    </nav>
+                </div>
                 <Link :href="route('tickets.create')">
                     <PrimaryButton>
                         <svg
@@ -89,39 +96,19 @@ const filteredTickets = computed(() => {
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th
+                                            v-for="header in [
+                                                'ID',
+                                                'Title',
+                                                'Status',
+                                                'Priority',
+                                                'Created By',
+                                                'Assigned To',
+                                                'Actions',
+                                            ]"
+                                            :key="header"
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                         >
-                                            ID
-                                        </th>
-                                        <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                        >
-                                            Title
-                                        </th>
-                                        <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                        >
-                                            Status
-                                        </th>
-                                        <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                        >
-                                            Priority
-                                        </th>
-                                        <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                        >
-                                            Created By
-                                        </th>
-                                        <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                        >
-                                            Assigned To
-                                        </th>
-                                        <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                        >
-                                            Actions
+                                            {{ header }}
                                         </th>
                                     </tr>
                                 </thead>

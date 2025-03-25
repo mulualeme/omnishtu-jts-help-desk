@@ -18,6 +18,12 @@
         "vue": "^3.4.0"
     },
     "dependencies": {
+        "@tiptap/extension-image": "^2.11.5",
+        "@tiptap/extension-link": "^2.11.5",
+        "@tiptap/extension-placeholder": "^2.11.5",
+        "@tiptap/pm": "^2.11.5",
+        "@tiptap/starter-kit": "^2.11.5",
+        "@tiptap/vue-3": "^2.11.5",
         "lucide-vue-next": "^0.483.0"
     }
 }

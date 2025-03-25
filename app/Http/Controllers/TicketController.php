@@ -41,13 +41,13 @@ class TicketController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'priority' => 'required|in:low,medium,high',
         ]);
 
         $ticket = Ticket::create([
             ...$validated,
             'created_by' => auth()->id(),
-            'status' => 'open'
+            'status' => 'open',
+            'priority' => 'medium',
         ]);
 
         return redirect()->route('tickets.show', $ticket)
