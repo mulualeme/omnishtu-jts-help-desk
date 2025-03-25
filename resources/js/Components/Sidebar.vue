@@ -31,22 +31,18 @@ const page = usePage();
 const user = computed(() => page.props.auth.user);
 
 const hasRole = (role) => {
-    return user.value.roles.includes(role);
+    return user.value?.roles?.some((r) => r.name === role);
 };
 
 const dashboardRoute = computed(() => {
-    if (hasRole("admin")) return "admin.dashboard";
-    if (hasRole("agent")) return "agent.dashboard";
+    if (hasRole("admin")) return "dashboard";
+    if (hasRole("agent")) return "dashboard";
     return "dashboard";
 });
 
 const isActive = (href) => {
     if (href === dashboardRoute.value) {
-        return (
-            route().current("dashboard") ||
-            route().current("admin.dashboard") ||
-            route().current("agent.dashboard")
-        );
+        return route().current("dashboard");
     }
     return route().current(href) || route().current(href + ".*");
 };

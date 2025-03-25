@@ -1,15 +1,12 @@
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <div class="flex justify-between items-center">
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <div class="flex-1 flex justify-between items-center">
+                <h2 class="text-xl font-semibold text-gray-800 leading-tight">
                     Canned Responses
                 </h2>
-                <Link
-                    :href="route('canned-responses.create')"
-                    class="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700"
-                >
-                    Add Response
+                <Link :href="route('canned-responses.create')">
+                    <PrimaryButton> Add Response </PrimaryButton>
                 </Link>
             </div>
         </template>
@@ -50,7 +47,7 @@
                                             Visibility
                                         </th>
                                         <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                            class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
                                         >
                                             Actions
                                         </th>
@@ -89,7 +86,7 @@
                                             </span>
                                         </td>
                                         <td
-                                            class="px-6 py-4 whitespace-nowrap text-sm font-medium"
+                                            class="px-6 py-4 whitespace-nowrap text-sm font-medium text-right"
                                         >
                                             <button
                                                 @click="
@@ -144,6 +141,7 @@ import { Link } from "@inertiajs/vue3";
 import Pagination from "@/Components/Pagination.vue";
 import { router } from "@inertiajs/vue3";
 import { usePage } from "@inertiajs/vue3";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 const props = defineProps({
     responses: Object,

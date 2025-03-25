@@ -2,6 +2,7 @@
 import { ref, computed } from "vue";
 import { Head, Link } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 const props = defineProps({
     auth: Object,
@@ -32,44 +33,55 @@ const filteredTickets = computed(() => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Tickets
-            </h2>
+            <div class="flex-1 flex justify-between items-center">
+                <h2 class="text-xl font-semibold text-gray-800 leading-tight">
+                    Tickets
+                </h2>
+                <Link :href="route('tickets.create')">
+                    <PrimaryButton>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5 mr-2"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                            />
+                        </svg>
+                        Create Ticket
+                    </PrimaryButton>
+                </Link>
+            </div>
         </template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
-                        <div class="flex justify-between items-center mb-6">
-                            <div class="flex gap-4">
-                                <select
-                                    v-model="filters.status"
-                                    class="rounded-md border-gray-300"
-                                >
-                                    <option value="">All Status</option>
-                                    <option value="open">Open</option>
-                                    <option value="in_progress">
-                                        In Progress
-                                    </option>
-                                    <option value="closed">Closed</option>
-                                </select>
-                                <select
-                                    v-model="filters.priority"
-                                    class="rounded-md border-gray-300"
-                                >
-                                    <option value="">All Priority</option>
-                                    <option value="low">Low</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="high">High</option>
-                                </select>
-                            </div>
-                            <Link
-                                :href="route('tickets.create')"
-                                class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                        <div class="flex gap-4 mb-6">
+                            <select
+                                v-model="filters.status"
+                                class="rounded-md border-gray-300"
                             >
-                                Create Ticket
-                            </Link>
+                                <option value="">All Status</option>
+                                <option value="open">Open</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="closed">Closed</option>
+                            </select>
+                            <select
+                                v-model="filters.priority"
+                                class="rounded-md border-gray-300"
+                            >
+                                <option value="">All Priority</option>
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                            </select>
                         </div>
 
                         <div class="overflow-x-auto">

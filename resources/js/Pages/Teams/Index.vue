@@ -3,15 +3,12 @@
 
     <AuthenticatedLayout>
         <template #header>
-            <div class="flex justify-between items-center">
-                <h2 class="text-xl font-semibold leading-tight text-gray-800">
+            <div class="flex-1 flex justify-between items-center">
+                <h2 class="text-xl font-semibold text-gray-800 leading-tight">
                     Teams
                 </h2>
-                <div v-if="$page.props.auth.user" class="flex space-x-4">
-                    <Link
-                        :href="route('teams.create')"
-                        class="flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    >
+                <Link :href="route('teams.create')">
+                    <PrimaryButton>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             class="h-5 w-5 mr-2"
@@ -26,9 +23,9 @@
                                 d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                             />
                         </svg>
-                        New Team
-                    </Link>
-                </div>
+                        Add Team
+                    </PrimaryButton>
+                </Link>
             </div>
         </template>
 
@@ -193,6 +190,7 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { Head, Link, router } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 const props = defineProps({
     teams: {
