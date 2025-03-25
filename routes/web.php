@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\KnowledgeBaseCategoryController;
 use App\Http\Controllers\KnowledgeBaseArticleController;
 use App\Http\Controllers\CannedResponseController;
+use App\Http\Controllers\TeamController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -34,6 +35,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Canned Responses
     Route::resource('canned-responses', CannedResponseController::class);
+
+    // Teams routes
+    Route::resource('teams', TeamController::class);
 });
 
 // Public Knowledge Base Routes

@@ -87,6 +87,17 @@ onMounted(() => {
                                 >
                                     Canned Responses
                                 </NavLink>
+                                <NavLink
+                                    v-if="
+                                        page.props.auth.user?.roles?.some(
+                                            (role) => role.name === 'admin'
+                                        )
+                                    "
+                                    :href="route('teams.index')"
+                                    :active="route().current('teams.*')"
+                                >
+                                    Teams
+                                </NavLink>
                             </div>
                         </div>
 
@@ -233,6 +244,17 @@ onMounted(() => {
                             :active="route().current('canned-responses.*')"
                         >
                             Canned Responses
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            v-if="
+                                page.props.auth.user?.roles?.some(
+                                    (role) => role.name === 'admin'
+                                )
+                            "
+                            :href="route('teams.index')"
+                            :active="route().current('teams.*')"
+                        >
+                            Teams
                         </ResponsiveNavLink>
                     </div>
 

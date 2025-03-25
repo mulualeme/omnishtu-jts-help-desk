@@ -12,31 +12,67 @@ class KnowledgeBaseArticleController extends Controller
     public function index()
     {
         if (auth()->check()) {
-            $articles = KnowledgeBaseArticle::with('category')
-                ->orderBy('created_at', 'desc')
-                ->paginate(10);
+            $categories = KnowledgeBaseCategory::with(['articles' => function ($query) {
+                $query->select('id', 'category_id', 'title', 'slug', 'is_published', 'updated_at')
+                    ->orderBy('updated_at', 'desc');
+            }])
+            ->withCount('articles')
+            ->orderBy('name')
+            ->get()
+            ->map(function ($category) {
+                $category->articles = $category->articles->map(function ($article) {
+                    return [
+                        'id' => $article->id,
+                        'title' => $article->title,
+                        'slug' => $article->slug,
+                        'is_published' => $article->is_published,
+                        'updated_at' => $article->updated_at->format('M j, Y'),
+                    ];
+                });
+                return $category;
+            });
 
-            return Inertia::render('KnowledgeBase/Articles/Index', [
-                'articles' => $articles,
+            return Inertia::render('KnowledgeBase/Index', [
+                'categories' => $categories,
             ]);
         }
 
+        // For public view, only show published articles
         $categories = KnowledgeBaseCategory::with(['articles' => function ($query) {
             $query->where('is_published', true)
+                ->select('id', 'category_id', 'title', 'slug', 'updated_at')
                 ->orderBy('updated_at', 'desc');
-        }])->get();
+        }])
+        ->withCount(['articles' => function ($query) {
+            $query->where('is_published', true);
+        }])
+        ->orderBy('name')
+        ->get()
+        ->map(function ($category) {
+            $category->articles = $category->articles->map(function ($article) {
+                return [
+                    'id' => $article->id,
+                    'title' => $article->title,
+                    'slug' => $article->slug,
+                    'updated_at' => $article->updated_at->format('M j, Y'),
+                ];
+            });
+            return $category;
+        });
 
         return Inertia::render('KnowledgeBase/Index', [
             'categories' => $categories,
         ]);
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $categories = KnowledgeBaseCategory::orderBy('name')->get();
+        $selectedCategoryId = $request->query('category_id');
 
         return Inertia::render('KnowledgeBase/Articles/Create', [
             'categories' => $categories,
+            'selectedCategoryId' => $selectedCategoryId,
         ]);
     }
 
