@@ -3,6 +3,8 @@ import { ref, computed } from "vue";
 import { Head, Link, usePage } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import Dropdown from "@/Components/Dropdown.vue";
+import DropdownLink from "@/Components/DropdownLink.vue";
 
 const props = defineProps({
     auth: Object,
@@ -103,7 +105,7 @@ const filteredTickets = computed(() => {
                                                 'Priority',
                                                 'Created By',
                                                 'Assigned To',
-                                                'Actions',
+                                                '',
                                             ]"
                                             :key="header"
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -176,34 +178,54 @@ const filteredTickets = computed(() => {
                                             }}
                                         </td>
                                         <td
-                                            class="px-6 py-4 whitespace-nowrap text-sm font-medium"
+                                            class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
                                         >
-                                            <Link
-                                                :href="
-                                                    route(
-                                                        'tickets.show',
-                                                        ticket.id
-                                                    )
-                                                "
-                                                class="text-indigo-600 hover:text-indigo-900 mr-4"
-                                            >
-                                                View
-                                            </Link>
-                                            <Link
-                                                v-if="
-                                                    auth.user.id ===
-                                                    ticket.created_by
-                                                "
-                                                :href="
-                                                    route(
-                                                        'tickets.edit',
-                                                        ticket.id
-                                                    )
-                                                "
-                                                class="text-blue-600 hover:text-blue-900"
-                                            >
-                                                Edit
-                                            </Link>
+                                            <Dropdown align="right" width="48">
+                                                <template #trigger>
+                                                    <button
+                                                        class="inline-flex items-center text-gray-400 hover:text-gray-600"
+                                                    >
+                                                        <svg
+                                                            class="h-5 w-5"
+                                                            viewBox="0 0 20 20"
+                                                            fill="currentColor"
+                                                        >
+                                                            <path
+                                                                d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"
+                                                            />
+                                                        </svg>
+                                                    </button>
+                                                </template>
+
+                                                <template #content>
+                                                    <DropdownLink
+                                                        :href="
+                                                            route(
+                                                                'tickets.show',
+                                                                ticket.id
+                                                            )
+                                                        "
+                                                        class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                                    >
+                                                        View
+                                                    </DropdownLink>
+                                                    <DropdownLink
+                                                        v-if="
+                                                            auth.user.id ===
+                                                            ticket.created_by
+                                                        "
+                                                        :href="
+                                                            route(
+                                                                'tickets.edit',
+                                                                ticket.id
+                                                            )
+                                                        "
+                                                        class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                                    >
+                                                        Edit
+                                                    </DropdownLink>
+                                                </template>
+                                            </Dropdown>
                                         </td>
                                     </tr>
                                 </tbody>
