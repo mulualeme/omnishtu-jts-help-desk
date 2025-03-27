@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { Head, useForm, Link } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import InputLabel from "@/Components/InputLabel.vue";
@@ -8,6 +8,7 @@ import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import RichTextEditor from "@/Components/RichTextEditor.vue";
+import Breadcrumb from "@/Components/Breadcrumb.vue";
 
 const form = useForm({
     title: "",
@@ -21,6 +22,16 @@ const submit = () => {
 defineProps({
     auth: Object,
 });
+
+const breadcrumbItems = computed(() => [
+    {
+        label: "Tickets",
+        href: route("tickets.index"),
+    },
+    {
+        label: "New Ticket",
+    },
+]);
 </script>
 
 <template>
@@ -30,30 +41,7 @@ defineProps({
         <template #header>
             <div class="flex-1 flex justify-between items-center">
                 <div>
-                    <nav class="flex items-center text-gray-500 text-base">
-                        <Link
-                            :href="route('tickets.index')"
-                            class="hover:text-gray-700 text-xl font-semibold"
-                        >
-                            Tickets
-                        </Link>
-                        <svg
-                            class="h-5 w-5 mx-2"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M9 5l7 7-7 7"
-                            />
-                        </svg>
-                        <span class="text-gray-700 text-xl font-semibold"
-                            >New Ticket</span
-                        >
-                    </nav>
+                    <Breadcrumb :items="breadcrumbItems" />
                 </div>
             </div>
         </template>

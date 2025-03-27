@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Gate;
+use Stevebauman\Purify\Facades\Purify;
 
 class TicketController extends Controller
 {
@@ -42,6 +43,11 @@ class TicketController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
         ]);
+
+        $validated['description'] = Purify::config([
+            'HTML.Allowed' => config('purify.configs.default.HTML.Allowed'),
+            'CSS.AllowedProperties' => config('purify.configs.default.CSS.AllowedProperties'),
+        ])->clean($validated['description']);
 
         $ticket = Ticket::create([
             ...$validated,
@@ -86,9 +92,14 @@ class TicketController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'status' => 'required|in:open,in_progress,closed',
-            'priority' => 'required|in:low,medium,high',
+            'priority' => 'required|in:low,medium,high,critical',
             'assigned_to' => 'nullable|exists:users,id'
         ]);
+
+        $validated['description'] = Purify::config([
+            'HTML.Allowed' => config('purify.configs.default.HTML.Allowed'),
+            'CSS.AllowedProperties' => config('purify.configs.default.CSS.AllowedProperties'),
+        ])->clean($validated['description']);
 
         $ticket->update($validated);
 
