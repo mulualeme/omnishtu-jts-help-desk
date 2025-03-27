@@ -5,6 +5,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
+import Breadcrumb from "@/Components/Breadcrumb.vue";
 
 const props = defineProps({
     auth: Object,
@@ -31,6 +32,12 @@ const filteredTickets = computed(() => {
         return true;
     });
 });
+
+const breadcrumbItems = computed(() => [
+    {
+        label: "Tickets",
+    },
+]);
 </script>
 
 <template>
@@ -40,11 +47,7 @@ const filteredTickets = computed(() => {
         <template #header>
             <div class="flex-1 flex justify-between items-center">
                 <div>
-                    <nav class="flex items-center text-gray-500 text-base">
-                        <span class="text-gray-700 text-xl font-semibold"
-                            >Tickets</span
-                        >
-                    </nav>
+                    <Breadcrumb :items="breadcrumbItems" />
                 </div>
                 <Link :href="route('tickets.create')">
                     <PrimaryButton>
@@ -90,6 +93,7 @@ const filteredTickets = computed(() => {
                                 <option value="low">Low</option>
                                 <option value="medium">Medium</option>
                                 <option value="high">High</option>
+                                <option value="critical">Critical</option>
                             </select>
                         </div>
 
@@ -120,6 +124,12 @@ const filteredTickets = computed(() => {
                                     <tr
                                         v-for="ticket in filteredTickets"
                                         :key="ticket.id"
+                                        class="hover:bg-gray-50 cursor-pointer"
+                                        @click="
+                                            $inertia.visit(
+                                                route('tickets.show', ticket.id)
+                                            )
+                                        "
                                     >
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             {{ ticket.id }}
@@ -154,6 +164,9 @@ const filteredTickets = computed(() => {
                                             <span
                                                 class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
                                                 :class="{
+                                                    'bg-purple-100 text-purple-800':
+                                                        ticket.priority ===
+                                                        'critical',
                                                     'bg-red-100 text-red-800':
                                                         ticket.priority ===
                                                         'high',
@@ -180,7 +193,11 @@ const filteredTickets = computed(() => {
                                         <td
                                             class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
                                         >
-                                            <Dropdown align="right" width="48">
+                                            <Dropdown
+                                                align="right"
+                                                width="48"
+                                                @click.stop
+                                            >
                                                 <template #trigger>
                                                     <button
                                                         class="inline-flex items-center text-gray-400 hover:text-gray-600"

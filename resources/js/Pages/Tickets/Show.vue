@@ -1,12 +1,26 @@
 <script setup>
-import { ref, computed } from "vue";
+import { computed } from "vue";
 import { Head, Link } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import Breadcrumb from "@/Components/Breadcrumb.vue";
+import TicketDetails from "@/Pages/Tickets/TicketDetails.vue";
 
 const props = defineProps({
     auth: Object,
     ticket: Object,
 });
+
+const breadcrumbItems = computed(() => [
+    {
+        label: "Tickets",
+        href: route("tickets.index"),
+    },
+    {
+        label: props.ticket.title,
+    },
+]);
 
 const canEdit = computed(() => {
     const userRoles = props.auth.user.roles.map((role) => role.name);
@@ -20,6 +34,32 @@ const canAssign = computed(() => {
     const userRoles = props.auth.user.roles.map((role) => role.name);
     return userRoles.includes("admin") || userRoles.includes("agent");
 });
+
+const formattedCreatedAt = computed(() => {
+    const date = new Date(props.ticket.created_at);
+    const now = new Date();
+    const diffTime = Math.abs(now - date);
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) {
+        const hours = Math.floor(diffTime / (1000 * 60 * 60));
+        if (hours === 0) {
+            const minutes = Math.floor(diffTime / (1000 * 60));
+            return `${minutes} minute${minutes !== 1 ? "s" : ""} ago`;
+        }
+        return `${hours} hour${hours !== 1 ? "s" : ""} ago`;
+    } else if (diffDays === 1) {
+        return "yesterday";
+    } else if (diffDays < 7) {
+        return `${diffDays} days ago`;
+    } else {
+        return date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+        });
+    }
+});
 </script>
 
 <template>
@@ -27,128 +67,96 @@ const canAssign = computed(() => {
 
     <AuthenticatedLayout>
         <template #header>
-            <div class="flex justify-between items-center">
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    {{ ticket.title }}
-                </h2>
-                <div class="flex gap-4">
+            <div class="flex-1 flex justify-between items-center">
+                <div>
+                    <Breadcrumb :items="breadcrumbItems" />
+                </div>
+                <div class="flex items-center space-x-4">
                     <Link
                         v-if="canEdit"
                         :href="route('tickets.edit', ticket.id)"
-                        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
                     >
-                        Edit Ticket
-                    </Link>
-                    <Link
-                        :href="route('tickets.index')"
-                        class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
-                    >
-                        Back to Tickets
+                        <PrimaryButton>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-5 w-5 mr-2"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                />
+                            </svg>
+                            Edit Ticket
+                        </PrimaryButton>
                     </Link>
                 </div>
             </div>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <h3 class="text-lg font-semibold mb-4">
-                                    Ticket Details
-                                </h3>
-                                <div class="space-y-4">
+        <div class="flex min-h-screen bg-gray-50">
+            <!-- Main Content -->
+            <div class="flex-grow p-6">
+                <!-- Activity Feed -->
+                <div class="bg-white rounded-lg shadow">
+                    <div class="p-6">
+                        <div class="flex items-start space-x-3">
+                            <div
+                                class="w-10 h-10 bg-gray-200 rounded-full flex-shrink-0 flex items-center justify-center text-lg font-medium"
+                            >
+                                {{ ticket.creator.name[0].toUpperCase() }}
+                            </div>
+                            <div class="flex-grow">
+                                <div
+                                    class="flex justify-between items-start mb-1"
+                                >
                                     <div>
-                                        <span class="font-medium">Status:</span>
                                         <span
-                                            class="ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                                            :class="{
-                                                'bg-green-100 text-green-800':
-                                                    ticket.status === 'open',
-                                                'bg-yellow-100 text-yellow-800':
-                                                    ticket.status ===
-                                                    'in_progress',
-                                                'bg-gray-100 text-gray-800':
-                                                    ticket.status === 'closed',
-                                            }"
+                                            class="font-medium text-gray-900"
+                                            >{{ ticket.creator.name }}</span
                                         >
-                                            {{
-                                                ticket.status.replace("_", " ")
-                                            }}
-                                        </span>
+                                        <span class="text-gray-500 ml-2"
+                                            >created this ticket</span
+                                        >
                                     </div>
-                                    <div>
-                                        <span class="font-medium"
-                                            >Priority:</span
-                                        >
-                                        <span
-                                            class="ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                                            :class="{
-                                                'bg-red-100 text-red-800':
-                                                    ticket.priority === 'high',
-                                                'bg-yellow-100 text-yellow-800':
-                                                    ticket.priority ===
-                                                    'medium',
-                                                'bg-blue-100 text-blue-800':
-                                                    ticket.priority === 'low',
-                                            }"
-                                        >
-                                            {{ ticket.priority }}
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <span class="font-medium"
-                                            >Created By:</span
-                                        >
-                                        <span class="ml-2">{{
-                                            ticket.creator.name
-                                        }}</span>
-                                    </div>
-                                    <div>
-                                        <span class="font-medium"
-                                            >Assigned To:</span
-                                        >
-                                        <span class="ml-2">{{
-                                            ticket.assigned_agent?.name ||
-                                            "Unassigned"
-                                        }}</span>
-                                    </div>
-                                    <div>
-                                        <span class="font-medium"
-                                            >Created At:</span
-                                        >
-                                        <span class="ml-2">{{
-                                            new Date(
-                                                ticket.created_at
-                                            ).toLocaleString()
-                                        }}</span>
-                                    </div>
-                                    <div>
-                                        <span class="font-medium"
-                                            >Last Updated:</span
-                                        >
-                                        <span class="ml-2">{{
-                                            new Date(
-                                                ticket.updated_at
-                                            ).toLocaleString()
-                                        }}</span>
+                                    <div class="text-sm text-gray-500">
+                                        {{ formattedCreatedAt }}
                                     </div>
                                 </div>
-                            </div>
-
-                            <div>
-                                <h3 class="text-lg font-semibold mb-4">
-                                    Description
-                                </h3>
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    {{ ticket.description }}
+                                <div class="bg-gray-50 rounded-lg p-4">
+                                    <div
+                                        class="prose prose-sm max-w-none text-gray-700 [&>ul]:list-disc [&>ul]:pl-6 [&>ul]:my-2 [&>ol]:list-decimal [&>ol]:pl-6 [&>ol]:my-2 [&>li]:my-1 [&>ul>li]:my-1 [&>ol>li]:my-1 [&>h1]:text-2xl [&>h1]:font-bold [&>h1]:my-4 [&>h2]:text-xl [&>h2]:font-bold [&>h2]:my-3 [&>h3]:text-lg [&>h3]:font-bold [&>h3]:my-2 [&>p]:my-2 [&>ul]:mb-4 [&>ol]:mb-4 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
+                                        v-html="ticket.description"
+                                    ></div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div class="border-t px-6 py-4">
+                        <div class="flex space-x-4">
+                            <SecondaryButton class="w-24"
+                                >Reply</SecondaryButton
+                            >
+                            <SecondaryButton class="w-24"
+                                >Comment</SecondaryButton
+                            >
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <!-- Right Sidebar -->
+            <TicketDetails :ticket="ticket" :can-edit="canEdit" :auth="auth" />
         </div>
     </AuthenticatedLayout>
 </template>
+
+<style scoped>
+.border-black {
+    border-color: #000;
+}
+</style>

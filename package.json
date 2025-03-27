@@ -24,6 +24,8 @@
         "@tiptap/pm": "^2.11.5",
         "@tiptap/starter-kit": "^2.11.5",
         "@tiptap/vue-3": "^2.11.5",
-        "lucide-vue-next": "^0.483.0"
+        "laravel-echo": "^2.0.2",
+        "lucide-vue-next": "^0.483.0",
+        "pusher-js": "^8.4.0"
     }
 }
